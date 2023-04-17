@@ -10,6 +10,9 @@ RUN pacman -S --noconfirm gcc gcc-fortran tcl autoconf\
         linux-headers linux-lts\
         nvidia nvidia-utils nvidia-settings cuda
 
+## Installl OpenMPI package
+RUN pacman -S --noconfirm openmpi
+
 ## Setup the CUDA environment
 ENV CUDA_PATH=/opt/cuda
 ## Add CUDA_PATH to PATH and LD_LIBRARY_PATH
@@ -34,13 +37,29 @@ RUN wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f6
 RUN wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1ff1b38a-8218-4c53-9956-f0b264de35a4/l_HPCKit_p_2023.1.0.46346.sh
 
 ## Install the Base toolkit
-#RUN sh l_BaseKit_p_2023.1.0.46401.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
+RUN sh l_BaseKit_p_2023.1.0.46401.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
 ## Install the HPC toolkit
-#RUN sh l_HPCKit_p_2023.1.0.46346.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
+RUN sh l_HPCKit_p_2023.1.0.46346.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
+
+## Cleanup the installation files
+RUN rm -rf l_BaseKit_p_2023.1.0.46401.sh l_HPCKit_p_2023.1.0.46346.sh
 
 ## Run the modulefile generator
 WORKDIR /home/Apps/Compilers/intel/oneapi
-#RUN ./modulefiles-setup.sh --output-dir=/home/Apps/Compilers/modulefiles --ignore-latest --force
+RUN ./modulefiles-setup.sh --output-dir=/home/Apps/Compilers/modulefiles --ignore-latest --force
+
+## Download and install NVHPC
+WORKDIR /home/Apps/Compilers
+RUN mkdir -p nvidia/hpc_sdk
+WORKDIR /home/Apps/Compilers/nvidia
+RUN wget https://developer.download.nvidia.com/hpc-sdk/23.3/nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz
+RUN tar -xvf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz
+COPY nvhpcInstall.sh .
+RUN chmod +x nvhpcInstall.sh
+RUN ./nvhpcInstall.sh
+
+## Cleanup the installation files
+RUN rm -rf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz nvhpcInstall.sh
 
 ## Download and install environment-modules
 WORKDIR /home/Apps/Modules
