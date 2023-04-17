@@ -69,6 +69,20 @@ RUN tar -xvf modules-5.2.0.tar.gz
 WORKDIR /home/Apps/Modules/modules-5.2.0
 RUN ./configure --prefix=/home/Apps/Modules/5.2.0
 RUN make && make install
+
+## Download and install HDF5-1.14.0
+WORKDIR /home/Apps/Libraries
+RUN mkdir -p HDF5/1.14.0
+WORKDIR /home/Apps/Libraries/HDF5/1.14.0
+RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
+RUN tar -xvf hdf5-1.14.0.tar.gz
+
+##  build and install the GNU version
+WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
+COPY hdf5-gnu.sh .
+RUN chmod +x hdf5-gnu.sh
+RUN ./hdf5-gnu.sh
+
 WORKDIR /home/Apps
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
