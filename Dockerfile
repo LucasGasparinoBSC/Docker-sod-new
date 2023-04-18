@@ -30,6 +30,8 @@ RUN mkdir -p Compilers && mkdir -p Libraries && mkdir -p Modules
 ## Create a modulefiles folder
 WORKDIR /home/Apps/Compilers
 RUN mkdir -p modulefiles
+WORKDIR /home/Apps/Libraries
+RUN mkdir -p modulefiles
 
 ## Install the IntelOneAPI compilers
 RUN mkdir -p intel/oneapi && cd intel
@@ -92,6 +94,12 @@ COPY hdf5-nvhpc.sh .
 RUN chmod +x hdf5-nvhpc.sh
 RUN ./hdf5-nvhpc.sh
 
+## Build and innstall the intel version
+COPY hdf5-oneapi.sh .
+RUN chmod +x hdf5-oneapi.sh
+RUN ./hdf5-oneapi.sh
+
+## Set the syystem startpoint
 WORKDIR /home/Apps
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
