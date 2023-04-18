@@ -61,6 +61,10 @@ RUN ./nvhpcInstall.sh
 ## Cleanup the installation files
 RUN rm -rf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz nvhpcInstall.sh
 
+## Move the modulefiles to /Apps/Compilers modulefiles
+WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
+RUN cp modulefiles/* /home/Apps/Compilers/modulefiles -r
+
 ## Download and install environment-modules
 WORKDIR /home/Apps/Modules
 RUN mkdir -p 5.2.0
@@ -70,7 +74,7 @@ WORKDIR /home/Apps/Modules/modules-5.2.0
 RUN ./configure --prefix=/home/Apps/Modules/5.2.0
 RUN make && make install
 
-## Download and install HDF5-1.14.0
+## Download HDF5-1.14.0
 WORKDIR /home/Apps/Libraries
 RUN mkdir -p HDF5/1.14.0
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0
@@ -82,6 +86,11 @@ WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
 COPY hdf5-gnu.sh .
 RUN chmod +x hdf5-gnu.sh
 RUN ./hdf5-gnu.sh
+
+## Buildd and install the nvhpc version
+COPY hdf5-nvhpc.sh .
+RUN chmod +x hdf5-nvhpc.sh
+RUN ./hdf5-nvhpc.sh
 
 WORKDIR /home/Apps
 COPY entrypoint.sh .
