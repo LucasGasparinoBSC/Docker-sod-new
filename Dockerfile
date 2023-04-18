@@ -99,6 +99,11 @@ COPY hdf5-oneapi.sh .
 RUN chmod +x hdf5-oneapi.sh
 RUN ./hdf5-oneapi.sh
 
+## Add the modulefiles to the modulefiles folder
+WORKDIR /home/Apps/Libraries/modulefiles
+RUN mkdir -p hdf5
+COPY 1.14.0 ./hdf5
+
 ## Set the syystem startpoint
 WORKDIR /home/Apps
 COPY entrypoint.sh .

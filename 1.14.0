@@ -1,0 +1,81 @@
+#%Module1.0
+
+set PROG_NAME           HDF5
+set PROG_VERSION        1.14.0
+set PROG_HOME           /home/Apps/Libraries/$PROG_NAME/$PROG_VERSION
+
+
+proc ModulesHelp { } {
+puts stderr "$PROG_NAME version $PROG_VERSION"
+}
+
+module-whatis   "loads the $PROG_NAME $PROG_VERSION"
+
+# Tests of consistency
+# --------------------
+# This application cannot be loaded if another $PROG_NAME modulefile was previously loaded
+conflict $PROG_NAME
+
+# Add here specific conflict/prereqs versions for intel and gcc, and for impi and openmpi
+# conflict intel/VERSION <-- know to fail this version
+# conflict gcc/VERSION
+# prereq intel/VERSION <-- know to work only with this version
+# prereq gcc/VERSION
+# conflict impi/VERSION <-- know to fail this version
+# conflict openmpi/VERSION
+# prereq impi/VERSION <-- know to work only with this version
+# prereq openmpi/VERSION
+
+## Check which compiler to use
+# intel oneAPI
+if {[is-loaded compiler]} {
+    set COMPILER_ID "INTEL"
+    # Check that mkl and mpi are loaded as well
+    if {![is-loaded mpi] || ![is-loaded mkl]} {
+        puts stderr "ERROR: verify that MKL and MPI are loaded for Inte oneAPI"
+        exit 1
+    }
+    # Get the compiler version
+    set COMPILER_VERSION [exec icx --version | head -n 1 | cut -d " " -f 5]
+    # Convert to string
+    set COMPILER_VERSION [string trim $COMPILER_VERSION]
+    # Check that the compiler version is compatible with the one used to compile the library
+    if {$COMPILER_VERSION != "2023.1.0"} {
+        puts stderr "ERROR: the compiler version is not compatible with the one used to compile the library"
+        exit 1
+    }
+# NVHPC compiler
+} elseif {[is-loaded nvhpc]} {
+    set COMPILER_ID "NVHPC"
+    # Get the compiler version from the nvc version
+    set COMPILER_VERSION "23.3"
+# GCC compiler
+} else {
+    set COMPILER_ID "GNU"
+    # Get the compiler version
+    set COMPILER_VERSION "12.2.1"
+}
+
+# Append new info to PROG_HOME var
+set PROG_HOME $PROG_HOME/$COMPILER_ID/$COMPILER_VERSION
+
+### This shows info about loaded/unloaded module
+if { [module-info mode] != "whatis" } {
+puts stderr "[module-info mode] [module-info name] (PATH, LD_LIBRARY_PATH, LIBRARY_PATH, C_INCLUDE_PATH, CPLUS_INCLUDE_PATH, HDF5_DIR)"
+}
+
+prepend-path PATH               $PROG_HOME/bin
+prepend-path LD_LIBRARY_PATH    $PROG_HOME/lib
+#prepend-path LIBRARY_PATH       $PROG_HOME/lib
+#prepend-path C_INCLUDE_PATH     $PROG_HOME/include
+#prepend-path CPLUS_INCLUDE_PATH $PROG_HOME/include
+### extra env variables which need to be set
+
+###prepend-path --delim " " CFLAGS         "-I$PROG_HOME/include"
+###prepend-path --delim " " CXXFLAGS       "-I$PROG_HOME/include"
+###prepend-path --delim " " LDFLAGS        "-L$PROG_HOME/lib -lhdf5 -lhdf5_hl"
+
+
+#setenv         VARIABLE                VALUE
+setenv HDF5_DIR $PROG_HOME
+setenv HDF5_ROOT $PROG_HOME
