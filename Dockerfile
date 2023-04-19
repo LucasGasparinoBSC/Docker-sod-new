@@ -35,33 +35,15 @@ RUN mkdir -p modulefiles
 
 ## Install the IntelOneAPI compilers
 RUN mkdir -p intel/oneapi && cd intel
-RUN wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f605-4bcf-a81b-ea7531577c61/l_BaseKit_p_2023.1.0.46401.sh
-RUN wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1ff1b38a-8218-4c53-9956-f0b264de35a4/l_HPCKit_p_2023.1.0.46346.sh
-
-## Install the Base toolkit
-RUN sh l_BaseKit_p_2023.1.0.46401.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
-## Install the HPC toolkit
-RUN sh l_HPCKit_p_2023.1.0.46346.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi
-
-## Cleanup the installation files
-RUN rm -rf l_BaseKit_p_2023.1.0.46401.sh l_HPCKit_p_2023.1.0.46346.sh
-
-## Run the modulefile generator
-WORKDIR /home/Apps/Compilers/intel/oneapi
-RUN ./modulefiles-setup.sh --output-dir=/home/Apps/Compilers/modulefiles --ignore-latest --force
+COPY oneapiInstall.sh .
+RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
 
 ## Download and install NVHPC
 WORKDIR /home/Apps/Compilers
 RUN mkdir -p nvidia/hpc_sdk
 WORKDIR /home/Apps/Compilers/nvidia
-RUN wget https://developer.download.nvidia.com/hpc-sdk/23.3/nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz
-RUN tar -xvf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz
 COPY nvhpcInstall.sh .
-RUN chmod +x nvhpcInstall.sh
-RUN ./nvhpcInstall.sh
-
-## Cleanup the installation files
-RUN rm -rf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz nvhpcInstall.sh
+RUN chmod +x nvhpcInstall.sh && ./nvhpcInstall.sh
 
 ## Move the modulefiles to /Apps/Compilers modulefiles
 WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
