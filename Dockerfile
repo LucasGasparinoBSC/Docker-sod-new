@@ -27,13 +27,13 @@ WORKDIR /home/Apps
 RUN mkdir -p Compilers && mkdir -p Libraries && mkdir -p Modules
 
 ## Create a modulefiles folder
-WORKDIR /home/Apps/Compilers
-RUN mkdir -p modulefiles
 WORKDIR /home/Apps/Libraries
 RUN mkdir -p modulefiles
 
 ## Install the IntelOneAPI compilers
-RUN mkdir -p intel/oneapi && cd intel
+WORKDIR /home/Apps/Compilers
+RUN mkdir -p modulefiles && mkdir -p intel/oneapi
+WORKDIR /home/Apps/Compilers/intel
 COPY oneapiInstall.sh .
 RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
 
@@ -84,6 +84,11 @@ RUN ./hdf5-oneapi.sh
 WORKDIR /home/Apps/Libraries/modulefiles
 RUN mkdir -p hdf5
 COPY 1.14.0 ./hdf5
+
+## Download and build smartRedis using GCC
+WORKDIR /home/Apps/Libraries
+COPY smartRedis.sh .
+RUN chmod +x smartRedis.sh
 
 ## Set the syystem startpoint
 WORKDIR /home/Apps
