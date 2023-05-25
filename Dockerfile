@@ -42,6 +42,9 @@ RUN mkdir -p openmpi/4.1.5
 WORKDIR /home/Apps/Compilers/gnu/12.3.0/openmpi
 COPY openmpiInstall.sh .
 RUN chmod +x openmpiInstall.sh && ./openmpiInstall.sh
+WORKDIR /home/Apps/Compilers/modulefiles
+RUN mkdir -p gnu/12.3.0/openmpi
+COPY 4.1.5 ./gnu/12.3.0/openmpi
 
 ## Install the IntelOneAPI compilers
 WORKDIR /home/Apps/Compilers/intel
