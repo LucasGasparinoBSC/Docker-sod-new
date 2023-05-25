@@ -1,0 +1,27 @@
+#%Module1.0
+
+set PROG_NAME           OPENMPI
+set PROG_VERSION        4.1.5
+set PROG_HOME           /home/Apps/Compilers/gnu/12.3.0/openmpi/4.1.5
+
+proc ModulesHelp { } {
+	puts stderr "$PROG_NAME version $PROG_VERSION"
+}
+
+module-whatis   "loads the $PROG_NAME $PROG_VERSION environment"
+
+### This shows info about loaded/unloaded module
+if { [module-info mode] != "whatis" } {
+	puts stderr "[module-info mode] [module-info name] (PATH, MANPATH, LD_LIBRARY_PATH)"
+}
+
+prepend-path    PATH                    $PROG_HOME/bin
+prepend-path    C_INCLUDE_PATH          $PROG_HOME/include
+prepend-path    CPLUS_INCLUDE_PATH      $PROG_HOME/include
+prepend-path    MANPATH                 $PROG_HOME/share/man
+prepend-path    LD_LIBRARY_PATH         $PROG_HOME/lib
+
+### extra env variables which need to be set
+
+#setenv MPI              $PROG_NAME
+#setenv MPI_V            $PROG_VERSION

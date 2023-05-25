@@ -28,20 +28,27 @@ WORKDIR /home/Apps
 ## Create directories for compilers, libraries and Moddules
 RUN mkdir -p Compilers && mkdir -p Libraries && mkdir -p Modules
 
-## Create a modulefiles folder
+## Create folders for compilers
+WORKDIR /home/Apps/Compilers
+RUN mkdir -p gnu/12.3.0 && mkdir -p intel/oneapi && mkdir -p nvidia/hpc_sdk && mkdir -p modulefiles
+
+## Create folders for libraries
 WORKDIR /home/Apps/Libraries
-RUN mkdir -p modulefiles
+RUN mkdir -p HDF5/1.14.0 mkdir -p modulefiles
+
+## Install OpenMPI 4.1.5 using GCC-12
+WORKDIR /home/Apps/Compilers/gnu/12.3.0
+RUN mkdir -p openmpi/4.1.5
+WORKDIR /home/Apps/Compilers/gnu/12.3.0/openmpi
+COPY openmpiInstall.sh .
+RUN chmod +x openmpiInstall.sh && ./openmpiInstall.sh
 
 ## Install the IntelOneAPI compilers
-WORKDIR /home/Apps/Compilers
-RUN mkdir -p modulefiles && mkdir -p intel/oneapi
 WORKDIR /home/Apps/Compilers/intel
 COPY oneapiInstall.sh .
 RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
 
 ## Download and install NVHPC
-WORKDIR /home/Apps/Compilers
-RUN mkdir -p nvidia/hpc_sdk
 WORKDIR /home/Apps/Compilers/nvidia
 COPY nvhpcInstall.sh .
 RUN chmod +x nvhpcInstall.sh && ./nvhpcInstall.sh
@@ -60,8 +67,6 @@ RUN ./configure --prefix=/home/Apps/Modules/5.2.0
 RUN make && make install
 
 ## Download HDF5-1.14.0
-WORKDIR /home/Apps/Libraries
-RUN mkdir -p HDF5/1.14.0
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0
 RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
 RUN tar -xvf hdf5-1.14.0.tar.gz
@@ -73,14 +78,14 @@ WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
 #RUN ./hdf5-gnu.sh
 #
 ## Buildd and install the nvhpc version
-COPY hdf5-nvhpc.sh .
-RUN chmod +x hdf5-nvhpc.sh
-RUN ./hdf5-nvhpc.sh
+#COPY hdf5-nvhpc.sh .
+#RUN chmod +x hdf5-nvhpc.sh
+#RUN ./hdf5-nvhpc.sh
 
 ## Build and innstall the intel version
-COPY hdf5-oneapi.sh .
-RUN chmod +x hdf5-oneapi.sh
-RUN ./hdf5-oneapi.sh
+#COPY hdf5-oneapi.sh .
+#RUN chmod +x hdf5-oneapi.sh
+#RUN ./hdf5-oneapi.sh
 
 ## Add the modulefiles to the modulefiles folder
 WORKDIR /home/Apps/Libraries/modulefiles
