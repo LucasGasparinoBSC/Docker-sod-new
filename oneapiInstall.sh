@@ -5,10 +5,10 @@ wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f605-4
 wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/1ff1b38a-8218-4c53-9956-f0b264de35a4/l_HPCKit_p_2023.1.0.46346.sh
 
 ## Install the Basekit
-sh l_BaseKit_p_2023.1.0.46401.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi --components custom intel.oneapi.lin.dpcpp-cpp-compiler:intel.oneapi.lin.mkl.devel:intel.oneapi.lin.tbb.devel
+sh l_BaseKit_p_2023.1.0.46401.sh -a --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi --components intel.oneapi.lin.dpcpp-cpp-compiler:intel.oneapi.lin.mkl.devel:intel.oneapi.lin.tbb.devel
 
 ## Install the HPC kit
-sh l_HPCKit_p_2023.1.0.46346.sh -a -c --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi --components custom intel.oneapi.lin.mpi.devel:intel.oneapi.lin.dpcpp-cpp-compiler-pro:intel.oneapi.lin.ifort-compiler
+sh l_HPCKit_p_2023.1.0.46346.sh -a --eula accept -s --install-dir /home/Apps/Compilers/intel/oneapi --components intel.oneapi.lin.mpi.devel:intel.oneapi.lin.dpcpp-cpp-compiler-pro:intel.oneapi.lin.ifort-compiler
 
 ## Generate the modulefiles
 /home/Apps/Compilers/intel/oneapi/modulefiles-setup.sh --output-dir=/home/Apps/Compilers/modulefiles --ignore-latest --force

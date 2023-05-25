@@ -1,13 +1,15 @@
 ### Basic OS image that allows SOD2D to be built and tested
 
 ## Import the arch latest images
-FROM archlinux:latest
+#FROM archlinux:latest
+FROM archlinux:base-devel-20230507.0.148551
 
 ## Update and install basic system packages
 RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm gcc gcc-fortran tcl autoconf\
+RUN pacman -S --noconfirm gcc gcc-fortran gcc12 gcc12-fortran tcl autoconf\
         make cmake git wget vim curl ninja gdb tcl base-devel\
-        linux-headers linux-lts cuda
+        linux-headers linux-lts\
+        nvidia nvidia-utils nvidia-settings cuda
 
 ## Installl OpenMPI package
 RUN pacman -S --noconfirm openmpi
@@ -63,13 +65,13 @@ RUN mkdir -p HDF5/1.14.0
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0
 RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
 RUN tar -xvf hdf5-1.14.0.tar.gz
-
-##  build and install the GNU version
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
-COPY hdf5-gnu.sh .
-RUN chmod +x hdf5-gnu.sh
-RUN ./hdf5-gnu.sh
 
+###  build and install the GNU version
+#COPY hdf5-gnu.sh .
+#RUN chmod +x hdf5-gnu.sh
+#RUN ./hdf5-gnu.sh
+#
 ## Buildd and install the nvhpc version
 COPY hdf5-nvhpc.sh .
 RUN chmod +x hdf5-nvhpc.sh
@@ -88,7 +90,7 @@ COPY 1.14.0 ./hdf5
 ## Download and build smartRedis using GCC
 WORKDIR /home/Apps/Libraries
 COPY smartRedis.sh .
-RUN chmod +x smartRedis.sh
+##RUN chmod +x smartRedis.sh
 
 ## Set the syystem startpoint
 WORKDIR /home/Apps

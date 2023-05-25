@@ -13,4 +13,4 @@ tar -xvf nvhpc_2023_233_Linux_x86_64_cuda_multi.tar.gz
 /home/Apps/Compilers/nvidia/nvhpc_2023_233_Linux_x86_64_cuda_multi/install
 
 ## Cleanup
-rm -rf nvhpc_2023_233_Linux_x86_64_cuda_12.0.tar.gz nvhpc_2023_233_Linux_x86_64_cuda_multi *.tar.gz
+rm -rf nvhpc_2023_233_Linux_x86_64_cuda_multi *.tar.gz
