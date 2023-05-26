@@ -75,20 +75,17 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/sr
 RUN tar -xvf hdf5-1.14.0.tar.gz
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
 
-###  build and install the GNU version
-#COPY hdf5-gnu.sh .
-#RUN chmod +x hdf5-gnu.sh
-#RUN ./hdf5-gnu.sh
-#
-## Buildd and install the nvhpc version
-#COPY hdf5-nvhpc.sh .
-#RUN chmod +x hdf5-nvhpc.sh
-#RUN ./hdf5-nvhpc.sh
+##  build and install the GNU version
+COPY hdf5-gnu.sh .
+RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
 
-## Build and innstall the intel version
-#COPY hdf5-oneapi.sh .
-#RUN chmod +x hdf5-oneapi.sh
-#RUN ./hdf5-oneapi.sh
+# Build and innstall the intel version
+COPY hdf5-oneapi.sh .
+RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
+
+# Buildd and install the nvhpc version
+COPY hdf5-nvhpc.sh .
+RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
 
 ## Add the modulefiles to the modulefiles folder
 WORKDIR /home/Apps/Libraries/modulefiles
