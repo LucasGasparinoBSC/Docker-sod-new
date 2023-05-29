@@ -45,7 +45,7 @@ if {[is-loaded compiler]} {
         exit 1
     }
 # NVHPC compiler
-} elseif {[is-loaded nvhpc]} {
+} elseif {[is-loaded nvhpc-hpcx]} {
     set COMPILER_ID "NVHPC"
     # Get the compiler version from the nvc version
     set COMPILER_VERSION "23.3"
@@ -53,7 +53,7 @@ if {[is-loaded compiler]} {
 } else {
     set COMPILER_ID "GNU"
     # Get the compiler version
-    set COMPILER_VERSION "12.2.1"
+    set COMPILER_VERSION "12.3.0"
 }
 
 # Append new info to PROG_HOME var

@@ -3,7 +3,7 @@
 ## First need to make sure the NVHPPC modules are loaded
 source /home/Apps/Modules/5.2.0/init/profile.sh
 module use /home/Apps/Compilers/modulefiles
-module load nvhpc/23.3
+module load nvhpc-hpcx/23.3
 
 ## Workaround for using gcc-12 toolchain
 ln -s /usr/bin/gcc-12 /usr/local/bin/gcc
