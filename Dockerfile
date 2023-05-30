@@ -43,19 +43,16 @@ WORKDIR /home/Apps/Compilers/gnu/12.3.0/openmpi
 COPY openmpiInstall.sh .
 RUN chmod +x openmpiInstall.sh && ./openmpiInstall.sh
 
-## Install the IntelOneAPI compilers
-WORKDIR /home/Apps/Compilers/intel
-COPY oneapiInstall.sh .
-RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
-
 ## Download and install NVHPC
 WORKDIR /home/Apps/Compilers/nvidia
 COPY nvhpcInstall.sh .
 RUN chmod +x nvhpcInstall.sh && ./nvhpcInstall.sh
 
-## Move the modulefiles to /Apps/Compilers modulefiles
-WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
-RUN cp modulefiles/* /home/Apps/Compilers/modulefiles -r
+## Install the IntelOneAPI compilers
+# TODO: re-enable once fucking gcc13 gets fucking fixed.
+#WORKDIR /home/Apps/Compilers/intel
+#COPY oneapiInstall.sh .
+#RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
 
 ## Download and install environment-modules
 WORKDIR /home/Apps/Modules
@@ -65,6 +62,17 @@ RUN tar -xvf modules-5.2.0.tar.gz
 WORKDIR /home/Apps/Modules/modules-5.2.0
 RUN ./configure --prefix=/home/Apps/Modules/5.2.0
 RUN make && make install
+
+## Add the modulefiles to the modulefiles folder
+WORKDIR /home/Apps/Libraries/modulefiles
+RUN mkdir -p hdf5
+COPY 1.14.0 ./hdf5
+WORKDIR /home/Apps/Compilers/modulefiles
+RUN mkdir -p gnu/12.3.0/openmpi
+COPY 4.1.5 ./gnu/12.3.0/openmpi
+## Move the modulefiles to /Apps/Compilers modulefiles
+WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
+RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
 
 ## Download HDF5-1.14.0
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0
@@ -77,20 +85,13 @@ COPY hdf5-gnu.sh .
 RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
 
 # Build and innstall the intel version
-COPY hdf5-oneapi.sh .
-RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
+# TODO: see oneAPI compiler note.
+#COPY hdf5-oneapi.sh .
+#RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
 
 # Buildd and install the nvhpc version
 COPY hdf5-nvhpc.sh .
 RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
-
-## Add the modulefiles to the modulefiles folder
-WORKDIR /home/Apps/Libraries/modulefiles
-RUN mkdir -p hdf5
-COPY 1.14.0 ./hdf5
-WORKDIR /home/Apps/Compilers/modulefiles
-RUN mkdir -p gnu/12.3.0/openmpi
-COPY 4.1.5 ./gnu/12.3.0/openmpi
 
 ## Download and build smartRedis using GCC
 WORKDIR /home/Apps/Libraries
