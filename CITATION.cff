@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Gasparino
+    given-names: Lucas
+    orcid: https://orcid.org/0000-0003-2024-3731
+title: "My Research Software"
+version: 0.1.0
