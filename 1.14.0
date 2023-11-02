@@ -45,10 +45,10 @@ if {[is-loaded compiler]} {
         exit 1
     }
 # NVHPC compiler
-} elseif {[is-loaded nvhpc-hpcx]} {
+} elseif {[is-loaded nvhpc-hpcx-cuda12]} {
     set COMPILER_ID "NVHPC"
     # Get the compiler version from the nvc version
-    set COMPILER_VERSION "23.3"
+    set COMPILER_VERSION "23.9"
 # GCC compiler
 } else {
     set COMPILER_ID "GNU"

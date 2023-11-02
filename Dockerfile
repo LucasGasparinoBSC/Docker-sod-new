@@ -2,7 +2,7 @@
 
 ## Import the arch latest images
 #FROM archlinux:latest
-FROM archlinux:base-devel-20230507.0.148551
+FROM archlinux:latest
 
 ## Update and install basic system packages
 RUN pacman -Syu --noconfirm
@@ -25,7 +25,7 @@ WORKDIR /home
 RUN mkdir -p Apps
 WORKDIR /home/Apps
 
-## Create directories for compilers, libraries and Moddules
+## Create directories for compilers, libraries and Modules
 RUN mkdir -p Compilers && mkdir -p Libraries && mkdir -p Modules
 
 ## Create folders for compilers
@@ -50,9 +50,9 @@ RUN chmod +x nvhpcInstall.sh && ./nvhpcInstall.sh
 
 ## Install the IntelOneAPI compilers
 # TODO: re-enable once fucking gcc13 gets fucking fixed.
-#WORKDIR /home/Apps/Compilers/intel
-#COPY oneapiInstall.sh .
-#RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
+WORKDIR /home/Apps/Compilers/intel
+COPY oneapiInstall.sh .
+RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
 
 ## Download and install environment-modules
 WORKDIR /home/Apps/Modules
@@ -78,6 +78,13 @@ RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0
 RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
 RUN tar -xvf hdf5-1.14.0.tar.gz
+
+## Set a GCC12 ln path
+WORKDIR /home/Apps
+RUN mkdir -p GCC12
+RUN ln -s /usr/bin/gcc-12 GCC12/gcc
+RUN ln -s /usr/bin/g++-12 GCC12/g++
+RUN ln -s /usr/bin/gfortran-12 GCC12/gfortran
 WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
 
 ##  build and install the GNU version
@@ -86,8 +93,8 @@ RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
 
 # Build and innstall the intel version
 # TODO: see oneAPI compiler note.
-#COPY hdf5-oneapi.sh .
-#RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
+COPY hdf5-oneapi.sh .
+RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
 
 # Buildd and install the nvhpc version
 COPY hdf5-nvhpc.sh .

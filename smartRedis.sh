@@ -10,4 +10,4 @@ mkdir -p smartredis/0.4.0/gcc
 cd smartredis/0.4.0/gcc
 git clone https://github.com/CrayLabs/SmartRedis.git --depth=1 --branch v0.4.0
 cd SmartRedis
-CC=/usr/local/bin/gcc CXX=/usr/local/bin/g++ FC=/usr/local/bin/gfortran make lib-with-fortran
+CC=/home/Apps/GCC12/gcc CXX=/home/Apps/GCC12/g++ FC=/home/Apps/GCC12/gfortran make lib-with-fortran
