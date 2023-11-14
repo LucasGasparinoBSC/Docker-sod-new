@@ -6,8 +6,8 @@ FROM archlinux:latest
 
 ## Update and install basic system packages
 RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm gcc gcc-fortran gcc12 gcc12-fortran tcl autoconf\
-        make cmake git wget vim curl ninja gdb tcl base-devel\
+RUN pacman -S --noconfirm base-devel gcc gcc-fortran gcc12 gcc12-fortran tcl autoconf\
+        make cmake git wget vim curl ninja gdb tcl less\
         linux-headers linux-lts\
         nvidia nvidia-utils nvidia-settings cuda
 
@@ -70,43 +70,47 @@ COPY 1.14.0 ./hdf5
 WORKDIR /home/Apps/Compilers/modulefiles
 RUN mkdir -p gnu/12.3.0/openmpi
 COPY 4.1.5 ./gnu/12.3.0/openmpi
-## Move the modulefiles to /Apps/Compilers modulefiles
-WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
-RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
-
-## Download HDF5-1.14.0
-WORKDIR /home/Apps/Libraries/HDF5/1.14.0
-RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
-RUN tar -xvf hdf5-1.14.0.tar.gz
-
-## Set a GCC12 ln path
-WORKDIR /home/Apps
-RUN mkdir -p GCC12
-RUN ln -s /usr/bin/gcc-12 GCC12/gcc
-RUN ln -s /usr/bin/g++-12 GCC12/g++
-RUN ln -s /usr/bin/gfortran-12 GCC12/gfortran
-WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
-
-##  build and install the GNU version
-COPY hdf5-gnu.sh .
-RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
-
-# Build and innstall the intel version
-# TODO: see oneAPI compiler note.
-COPY hdf5-oneapi.sh .
-RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
-
-# Buildd and install the nvhpc version
-COPY hdf5-nvhpc.sh .
-RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
-
-## Download and build smartRedis using GCC
-WORKDIR /home/Apps/Libraries
-COPY smartRedis.sh .
-RUN chmod +x smartRedis.sh && ./smartRedis.sh
-
-## Set the syystem startpoint
-WORKDIR /home/Apps
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./entrypoint.sh"]
+### Move the modulefiles to /Apps/Compilers modulefiles
+#WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
+#RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
+#
+### Download HDF5-1.14.0
+#WORKDIR /home/Apps/Libraries/HDF5/1.14.0
+#RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
+#RUN tar -xvf hdf5-1.14.0.tar.gz
+#
+### Set a GCC12 ln path
+#WORKDIR /home/Apps
+#RUN mkdir -p GCC12
+#RUN ln -s /usr/bin/gcc-12 GCC12/gcc
+#RUN ln -s /usr/bin/g++-12 GCC12/g++
+#RUN ln -s /usr/bin/gfortran-12 GCC12/gfortran
+#WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
+#
+###  build and install the GNU version
+#COPY hdf5-gnu.sh .
+#RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
+#
+## Build and innstall the intel version
+## TODO: see oneAPI compiler note.
+#COPY hdf5-oneapi.sh .
+#RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
+#
+## Buildd and install the nvhpc version
+#COPY hdf5-nvhpc.sh .
+#RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
+#
+### Download and build smartRedis using GCC
+#WORKDIR /home/Apps/Libraries
+#COPY smartRedis.sh .
+#RUN chmod +x smartRedis.sh && ./smartRedis.sh
+#
+### SmartRedis with NVHPC
+#COPY smartRedis-nvhpc.sh .
+#RUN chmod +x smartRedis-nvhpc.sh && ./smartRedis-nvhpc.sh
+#
+### Set the syystem startpoint
+#WORKDIR /home/Apps
+#COPY entrypoint.sh .
+#RUN chmod +x entrypoint.sh
+#ENTRYPOINT ["./entrypoint.sh"]
