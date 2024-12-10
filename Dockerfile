@@ -6,8 +6,8 @@ FROM archlinux:latest
 
 ## Update and install basic system packages
 RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm base-devel gcc gcc-fortran gcc12 gcc12-fortran tcl autoconf\
-        make cmake git wget vim curl ninja gdb tcl less\
+RUN pacman -S --noconfirm base-devel gcc gcc-fortran tcl autoconf\
+        make cmake git wget vim curl ninja gdb less\
         linux-headers linux-lts\
         nvidia nvidia-utils nvidia-settings cuda
 
@@ -30,18 +30,11 @@ RUN mkdir -p Compilers && mkdir -p Libraries && mkdir -p Modules
 
 ## Create folders for compilers
 WORKDIR /home/Apps/Compilers
-RUN mkdir -p gnu/12.3.0 && mkdir -p intel/oneapi && mkdir -p nvidia/hpc_sdk && mkdir -p modulefiles
+RUN mkdir -p intel/oneapi && mkdir -p nvidia/hpc_sdk && mkdir -p modulefiles
 
 ## Create folders for libraries
 WORKDIR /home/Apps/Libraries
-RUN mkdir -p HDF5/1.14.0 mkdir -p modulefiles
-
-## Install OpenMPI 4.1.5 using GCC-12
-WORKDIR /home/Apps/Compilers/gnu/12.3.0
-RUN mkdir -p openmpi/4.1.5
-WORKDIR /home/Apps/Compilers/gnu/12.3.0/openmpi
-COPY openmpiInstall.sh .
-RUN chmod +x openmpiInstall.sh && ./openmpiInstall.sh
+RUN mkdir -p HDF5/1.14.5 && mkdir -p CGNS/4.5.0 && mkdir -p modulefiles
 
 ## Download and install NVHPC
 WORKDIR /home/Apps/Compilers/nvidia
@@ -49,7 +42,6 @@ COPY nvhpcInstall.sh .
 RUN chmod +x nvhpcInstall.sh && ./nvhpcInstall.sh
 
 ## Install the IntelOneAPI compilers
-# TODO: re-enable once fucking gcc13 gets fucking fixed.
 WORKDIR /home/Apps/Compilers/intel
 COPY oneapiInstall.sh .
 RUN chmod +x oneapiInstall.sh && ./oneapiInstall.sh
@@ -66,31 +58,22 @@ RUN make && make install
 ## Add the modulefiles to the modulefiles folder
 WORKDIR /home/Apps/Libraries/modulefiles
 RUN mkdir -p hdf5
-COPY 1.14.0 ./hdf5
-WORKDIR /home/Apps/Compilers/modulefiles
-RUN mkdir -p gnu/12.3.0/openmpi
-COPY 4.1.5 ./gnu/12.3.0/openmpi
-### Move the modulefiles to /Apps/Compilers modulefiles
-#WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
-#RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
-#
-### Download HDF5-1.14.0
-#WORKDIR /home/Apps/Libraries/HDF5/1.14.0
-#RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.0/src/hdf5-1.14.0.tar.gz
-#RUN tar -xvf hdf5-1.14.0.tar.gz
-#
-### Set a GCC12 ln path
-#WORKDIR /home/Apps
-#RUN mkdir -p GCC12
-#RUN ln -s /usr/bin/gcc-12 GCC12/gcc
-#RUN ln -s /usr/bin/g++-12 GCC12/g++
-#RUN ln -s /usr/bin/gfortran-12 GCC12/gfortran
-#WORKDIR /home/Apps/Libraries/HDF5/1.14.0/hdf5-1.14.0
-#
-###  build and install the GNU version
-#COPY hdf5-gnu.sh .
-#RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
-#
+COPY 1.14.5 ./hdf5
+
+## Move the NVHPC modulefiles to /Apps/Compilers modulefiles
+WORKDIR /home/Apps/Compilers/nvidia/hpc_sdk
+RUN cp -r modulefiles/* /home/Apps/Compilers/modulefiles/.
+
+## Download HDF5-1.14.5
+WORKDIR /home/Apps/Libraries/HDF5/1.14.5
+RUN wget https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.5/hdf5-1.14.5.tar.gz
+RUN tar -xvf hdf5-1.14.5.tar.gz
+WORKDIR /home/Apps/Libraries/HDF5/1.14.5/hdf5-1.14.5
+
+##  build and install the GNU version
+COPY hdf5-gnu.sh .
+RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
+
 ## Build and innstall the intel version
 ## TODO: see oneAPI compiler note.
 #COPY hdf5-oneapi.sh .
@@ -110,7 +93,7 @@ COPY 4.1.5 ./gnu/12.3.0/openmpi
 #RUN chmod +x smartRedis-nvhpc.sh && ./smartRedis-nvhpc.sh
 #
 ### Set the syystem startpoint
-#WORKDIR /home/Apps
-#COPY entrypoint.sh .
-#RUN chmod +x entrypoint.sh
-#ENTRYPOINT ["./entrypoint.sh"]
+WORKDIR /home/Apps
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
