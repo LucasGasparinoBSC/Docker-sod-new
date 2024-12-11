@@ -76,13 +76,13 @@ RUN chmod +x hdf5-gnu.sh && ./hdf5-gnu.sh
 
 ## Build and innstall the intel version
 ## TODO: see oneAPI compiler note.
-#COPY hdf5-oneapi.sh .
-#RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
-#
-## Buildd and install the nvhpc version
-#COPY hdf5-nvhpc.sh .
-#RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
-#
+COPY hdf5-oneapi.sh .
+RUN chmod +x hdf5-oneapi.sh && ./hdf5-oneapi.sh
+
+# Build and install the nvhpc version
+COPY hdf5-nvhpc.sh .
+RUN chmod +x hdf5-nvhpc.sh && ./hdf5-nvhpc.sh
+
 ### Download and build smartRedis using GCC
 #WORKDIR /home/Apps/Libraries
 #COPY smartRedis.sh .
