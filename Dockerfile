@@ -8,7 +8,7 @@ FROM archlinux:latest
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm base-devel gcc gcc-fortran tcl autoconf\
         make cmake git wget vim curl ninja gdb less\
-        linux-headers linux-lts\
+        linux-headers linux-lts openssh\
         nvidia nvidia-utils nvidia-settings cuda
 
 ## Installl OpenMPI package
